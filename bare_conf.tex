@@ -63,7 +63,19 @@
 % \documentclass[conference]{../sty/IEEEtran}
 
 \usepackage{amsmath}
+\usepackage{blindtext, graphicx}
+\usepackage{algorithm}
 
+\usepackage{bbm}
+
+\usepackage{algpseudocode}
+\usepackage{pifont}
+\usepackage{tikz}
+\usepackage{amssymb}
+%\usepackage{natbib}
+\usepackage{upgreek}
+
+\usepackage{mathtools}
 
 
 % Some very useful LaTeX packages include:
@@ -424,7 +436,36 @@ We setup a microgrids closer to the villages, which will have connection from ma
 
 \subsection{Problem 1}
 
-To electrify a village, we setup microgrids that can store and distribute power. In our current work, we consider 2 microgrids, equipped with batteries storing solar and wind powers respectively. They also have electric lines connected from the main grid. Power supply is done in specific time slots, for example every 2 hours. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit. 
+Our objective in this work is to electrify a un-electrified villages. We setup microgrids close to the village, which provides electrical connections to the village. it also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have power generation capabilities. They have access to solar(wind) power and needs to obtain excess power from main grid.  
+
+One natural solution without the use of batteries is to use the solar and wind power generated at every time slot. The excess power will be then requested from the main grid. If the requested power is less than or equal to the maximum alloted power, the main grid transfers this to the microgrids. Other wise, it transfers the maximum alloted power. This idea is described in Algorithm 1.
+
+
+\begin{algorithm}
+\caption{}
+\label{greedy}
+\begin{algorithmic}[1]
+	\State (Initial) Consumption = 8 
+    \State get\_consumption(consumption) : Procedure that gives next consumption level based on the current consumption level.
+    \State solar() : Procedure that computes solar power generated
+    \State wind() : Procedure that computes wind power generated.
+    \State max\_prod : Maximum power alloted by the main grid.
+    \State Deficit = 0 ; iterations = 0
+    \Procedure{At every Time Slot}{}   
+     \State solar\_action = solar()
+     \State wind\_action = wind()
+     \State main\_action = max(0,min(max\_prod, Consumption - (solar\_action+wind\_action)))
+     \State Consumption $\leftarrow$ get\_consumption(Consuption).
+     \State Deficit += Consumption - (solar\_action + wind\_action + main\_action)
+     \State iterations += 1;
+    \EndProcedure
+    \State Average Deficit = Deficit/iterations;
+    
+\end{algorithmic}
+\end{algorithm}
+
+
+Our objective in this current work is to do better than the above described solution. We consider 2 microgrids, equipped with batteries storing solar and wind powers respectively. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
 
 We formulate the problem in the framework of Markov Decision Process(MDP). MDP is the most popular mathematical framework for modeling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix and R is
 the reward function. The goal is to find an optimal sequence of actions that minimizes the cost objective. 
@@ -455,16 +496,42 @@ Our objective is to minimize the difference in demand and supply of the power. S
 $$(consumption - (solar\_power+wind\_power+main\_power))^2$$
 
 When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like Value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with algorithms which can be applied when the model information is not known. One such popular model-free algorithm is Q-learning. However, we cannot have microgrids applying Q-Learning independently, as they both are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm to solve the problem. At every slot, both the microgrids exchange the battery level information with each other. Then they apply Q-Learning on the joint state and obtain joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ ans so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
-\begin{equation}
+\begin{equation}\label{Q-val}
 \begin{split}
 Q(s_{k},a_{k}) = Q(s_{k},a_{k}) + \\
  \alpha[r_{k}+\gamma max_{a}Q(s_{k+1},a) - Q(s_{k},a_{k})] 
 \end{split}
 \end{equation}
-We update this Q-values until convergence. At the end of this process, we will have an optimal policy that gives for each state, the optimal action to be taken. 
+We update this Q-values until convergence. At the end of this process, we will have an optimal policy that gives for each state, the optimal action to be taken. The idea is described in  Algorithm 2. 
+
+\begin{algorithm}
+\caption{}
+\label{q-learning}
+\begin{algorithmic}[1]
+	\State Initial state = [8, 5, 5] 
+    \State get\_consumption(consumption) : Procedure that gives next consumption level based on the current consumption level.
+    \State solar() : Procedure that computes solar power generated
+    \State wind() : Procedure that computes wind power generated.
+    \State max\_prod : Maximum power alloted by the main grid.
+    \State Deficit = 0 ; iterations = 0
+    \Procedure{At every Time Slot and both the microgrids}{}   
+     
+     \State Select an joint action $a$ vector according to $\epsilon$-greedy policy.
+     \State new\_solar = solar - a(solar\_action) + solar()
+     \State new\_wind = wind - a(wind\_action) + wind()
+     \State new\_consumption = get\_consumption(consumption)
+     \State Update the Q-values according to \eqref{Q-val}
+     \State state = [new\_consumption, new\_solar, new\_wind]
+     \State Deficit += Consumption - (a(solar\_action) + a(wind\_action) + a(main\_action))
+     \State iterations += 1;
+    \EndProcedure
+    \State Average Deficit = Deficit/iterations;
+\end{algorithmic}
+\end{algorithm}
+
 
 \subsection{Problem 2}
-In the above formulation, the cost of production is not taken into consideration. Therefore, it is natural to use entire power obtained from the main grid and we optimize on the amount of power we draw from the solar and wind batteries. In this formulation, we put a cost on amount of power that can be obtained from the main grid. That is, we modify our single stage cost function as follows:
+In the above formulation, the cost of non-renewable power production at the main grid site is not taken into consideration. Therefore, it is natural to use entire power obtained from the main grid and we optimize on the amount of power we draw from the solar and wind batteries. In this formulation, we put a cost on amount of power that can be obtained from the main grid. That is, we modify our single stage cost function as follows:
 \begin{equation}
 \begin{split}
  c*(consumption - (solar\_power + wind\_power+ \\
@@ -476,6 +543,16 @@ In the above formulation, the cost of production is not taken into consideration
 
 where $c$ is the parameter that controls the demand-supply objective and the main grid production cost. 
 Similar to the above problem, we apply multi-agent Q-Learning to obtain the optimal solution. 
+
+\section{Experiments}
+As described earlier, we consider 2 microgrids operating on solar and wind power batteries. Consumption levels are taken to be 8,10 and 12. Note here that even larger consumption values can be scaled to the above considered values. The probability transition matrix for the consumption levels is given below. The maximum storage capacities of batteries are taken to be 5. The renewable energy generation process, for simulation purposes is considered to be Poisson with mean 2. Discount factor of the Q-learning is taken to be 0.9.
+
+We begin our simulations with the state $[8,5,5]$. First we run Algorithm 1 for $10^6$ iterations and compute the average deficit in demand and the supply. Then we run Algorithm 2 for $10^8$ iterations and compute the average deficit using optimal Q-values for $10^4$ iterations. We compare both the algorithms in Figure 1.
+
+With regard to the problem 2, we plot the values of average deficit in the power and the average production at the main grid obtained by different values of $c$ in \eqref{}. This is shown in Figure 2. 
+
+\subsection{Observations}
+
 
 \section{Conclusion}
 The conclusion goes here.

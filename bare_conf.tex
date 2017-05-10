@@ -328,8 +328,8 @@
 % correct bad hyphenation here
 \hyphenation{Smart grids}
 
-
 \begin{document}
+
 %
 % paper title
 % Titles are generally capitalized except for words such as a, an, and, as,
@@ -337,29 +337,26 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-<<<<<<< HEAD
+
 \title{Multi-agent Q-Learning for minimizing Demand-Supply deficit in microgrids}
-=======
-\title{Multi-agent Cooperative Learning for Energy trading between Microgrids}
->>>>>>> origin/master
 
 
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-<<<<<<< HEAD
+
 \author{\IEEEauthorblockN{Raghuram Bharadwaj D.}
 	\IEEEauthorblockA{IISc, Bangalore, India\\
 	 raghu.bharadwaj@csa.iisc.ernet.in}
 	\and
-	\IEEEauthorblockN{Sai Koti Reddy D.}
+	\IEEEauthorblockN{D. Sai Koti Reddy }
 	\IEEEauthorblockA{IISc, Bangalore, India \\
 		 danda.reddy@csa.iisc.ernet.in}
 	\and
   \centering	\IEEEauthorblockN{Shalabh Bhatnagar}
 	\IEEEauthorblockA{IISc, Bangalore, India\\
 		shalabh@csa.iisc.ernet.in}}
-=======
+
 %\author{Raghuram$^\dagger$, D. Sai Koti Reddy$^\dagger$,  Shalabh Bhatnagar$^\dagger$
 %\thanks{
 %$^\dagger$ Department of Computer Science and Automation,
@@ -386,7 +383,7 @@
 %Email: shalabh@csa.iisc.ernet.in}
 %}
 
->>>>>>> origin/master
+
 
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
@@ -504,7 +501,7 @@ where $a_{t} = \pi(s_{t}),$ and $\gamma$ is the discount factor.
 
 We model Power Demand as a Markov process. That is, current Demand depends only on the previous value. The Demand value, and the amount of power left in the batteries form the state of the MDP. That is, 
 \begin{equation}
- state = [Demand, solar\_batterylevel, wind\_batteylevel].
+ state = [Demand, solar\_batterylevel, wind\_batterylevel].
 \end{equation}
 
 Based on the current state, the microgrids need to take action on how much power needs to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all time periods, while power from renewable sources is uncertain in nature. 
@@ -516,7 +513,7 @@ Action = [solar\_power,wind\_power,main\_power],
 The state evolves as follows:
 \begin{equation}
 \begin{split}
-solar\_batterylevel = solar\_batterylevel - solar\_power + \\ solar(), 
+solar\_batterylevel &= solar\_batterylevel - solar\_power \\&\hspace{1cm}+ solar(), 
 \end{split}
 \end{equation}
 and
@@ -531,8 +528,8 @@ Our objective is to minimize the long term average difference in demand and supp
 %$$ Single\_stage\_cost\_function  =$$
 \begin{equation}
 \begin{split}
-R = -(Demand - \\
-(solar\_power+wind\_power+main\_power))^2
+R = -&(Demand - \\
+&(solar\_power+wind\_power+main\_power))^2
 \end{split}
 \end{equation}
 When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like Value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with algorithms which can be applied when the model information is not known. One such popular model-free algorithm is Q-learning \cite{vol2}. However, we cannot have microgrids applying Q-Learning independently, as they are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm \cite{marl} to solve the problem. At every slot, the microgrids exchange the battery level information among themselves. Then they apply Q-Learning on the joint state and obtain joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ and so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:

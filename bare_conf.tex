@@ -337,28 +337,23 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Title under construction}
+\title{Multi-agent Q-Learning for minimizing Demand-Supply deficit in microgrids}
 
 
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{A}
-\IEEEauthorblockA{School of Electrical and\\Computer Engineering\\
-Georgia Institute of Technology\\
-Atlanta, Georgia 30332--0250\\
-Email: http://www.michaelshell.org/contact.html}
-\and
-\IEEEauthorblockN{B}
-\IEEEauthorblockA{Twentieth Century Fox\\
-Springfield, USA\\
-Email: homer@thesimpsons.com}
-\and
-\IEEEauthorblockN{C}
-\IEEEauthorblockA{Starfleet Academy\\
-San Francisco, California 96678--2391\\
-Telephone: (800) 555--1212\\
-Fax: (888) 555--1212}}
+\author{\IEEEauthorblockN{Raghuram Bharadwaj D.}
+	\IEEEauthorblockA{IISc, Bangalore, India\\
+	 raghu.bharadwaj@csa.iisc.ernet.in}
+	\and
+	\IEEEauthorblockN{Sai Koti Reddy D.}
+	\IEEEauthorblockA{IISc, Bangalore, India \\
+		 danda.reddy@csa.iisc.ernet.in}
+	\and
+  \centering	\IEEEauthorblockN{Shalabh Bhatnagar}
+	\IEEEauthorblockA{IISc, Bangalore, India\\
+		shalabh@csa.iisc.ernet.in}}
 
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
@@ -419,9 +414,9 @@ The abstract goes here.
 
 \section{Introduction}
 
-Electricity is one of most important components of modern life. There are a total of 18,452 unelectrified villages in India. Providing electricity to these villages is difficult for a number of reasons. The village may be situated very far away from the main grid and it would be difficult to establish a direct electrical line between them. Also, due to increasing global warming, we want to make less use of fossil fuels. Our objective in this work is to provide a solution to electrifying these villages.
+Electricity is one of the most important components of the modern life. There are a total of 18,452 unelectrified villages in India. Providing electricity to these villages is difficult for a number of reasons. The village may be situated very far away from the main grid and it would be difficult to establish a direct electrical line between them. Also, due to increasing global warming, we want to make less use of fossil fuels. Our objective in this work is to provide a solution to electrifying these villages.
 
-We setup a microgrids closer to the villages, which will have connection from main grids. The microgrids will be provided with batteries that can store renewable energy sources. That is, one microgrid is equipped with battery storing solar energy and other with wind energy and so on. Owing to the cost, these batteries will have limited storage capacities. Now each microgrid needs to take decision on amount of solar energy that needs to be used at every time interval and amount of power needs to drawn from the main grid. Consider a scenario where, microgrids will use the renewable energy as it is. That is, they do not store the energy. Then, during the peak demand, if the amount of renewable energy generated is low and power obtained from main grid is also low, it leads to blackout. Thus, it is important to intelligently store and use the renewable energy. In this work, we propose an Multi-agent Reinforcement learning algorithm to solve this problem. 
+We setup microgrids closer to the villages, with an electricity connection from main grids. The microgrids will also be provided with batteries that can store renewable energy sources. Owing to the cost, these batteries will have limited storage capacities. Now each microgrid needs to take decision on amount of renewable energy that needs to be used at every time slot and the amount of power that needs to drawn from the main grid. Consider a scenario where, microgrids will use the renewable energy as it is. That is, they do not store the energy. Then, during the peak demand, if the amount of renewable energy generated is low and power obtained from the main grid is also low, it leads to huge blackout. Thus, it is important to intelligently store and use the renewable energy. In this work, we apply Multi-agent Q-learning algorithm to solve this problem. 
 
 -------Literature Work to Follow------------------
 
@@ -433,30 +428,30 @@ We setup a microgrids closer to the villages, which will have connection from ma
 % Subsubsection text here.
 
 \section{Our Work}
+In this section, we discuss two important problems associated with the microgrids. We first formulate the problem in the framework of Markov Decision Process (MDP), similar to the one described in \cite{goodmdp}. We then apply cooperative Multi-Agent Q-Learning algorithm to solve the problems.
 
-\subsection{Problem 1}
+\subsection{Problem 1 - Minimizing Demand-Supply Deficit}
 
-Our objective in this work is to electrify a un-electrified villages. We setup microgrids close to the village, which provides electrical connections to the village. it also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have power generation capabilities. They have access to solar(wind) power and needs to obtain excess power from main grid.  
-
-One natural solution without the use of batteries is to use the solar and wind power generated at every time slot. The excess power will be then requested from the main grid. If the requested power is less than or equal to the maximum alloted power, the main grid transfers this to the microgrids. Other wise, it transfers the maximum alloted power. This idea is described in Algorithm 1.
+Consider a village that has not been electrified yet. We setup microgrids close to the village, which provides electrical connections to the village. It also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have power generation capabilities. They have access to renewable power and needs to obtain excess power from main grid. For ease of explanation, we consider two renewable sources - solar and wind. At each time slot, these obtain the power demand for the next slot from customers with the help of smart meters. These microgrids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.  
+One natural solution without the use of storage batteries is to fully use the solar and wind power generated at every time slot. The excess demand will be then requested from the main grid. If the requested power is less than or equal to the maximum alloted power, the main grid transfers this to the microgrids. Other wise, it transfers the maximum alloted power. This idea is described in Algorithm 1.
 
 
 \begin{algorithm}
 \caption{}
 \label{greedy}
 \begin{algorithmic}[1]
-	\State (Initial) Consumption = 8 
-    \State get\_consumption(consumption) : Procedure that gives next consumption level based on the current consumption level.
-    \State solar() : Procedure that computes solar power generated
-    \State wind() : Procedure that computes wind power generated.
+	\State Demand $\leftarrow$ Initial Demand
+    \State get\_Demand(Demand) : Procedure that gives next Demand level based on the current Demand level.
+    \State solar() : Function that computes solar power generated in a time slot
+    \State wind() : Function that computes wind power generated in a time slot
     \State max\_prod : Maximum power alloted by the main grid.
     \State Deficit = 0 ; iterations = 0
     \Procedure{At every Time Slot}{}   
      \State solar\_action = solar()
      \State wind\_action = wind()
-     \State main\_action = max(0,min(max\_prod, Consumption - (solar\_action+wind\_action)))
-     \State Consumption $\leftarrow$ get\_consumption(Consuption).
-     \State Deficit += Consumption - (solar\_action + wind\_action + main\_action)
+     \State main\_action = max(0,min(max\_prod, Demand - (solar\_action+wind\_action)))
+     \State Demand $\leftarrow$ get\_Demand(Demand).
+     \State Deficit += Demand - (solar\_action + wind\_action + main\_action)
      \State iterations += 1;
     \EndProcedure
     \State Average Deficit = Deficit/iterations;
@@ -465,17 +460,21 @@ One natural solution without the use of batteries is to use the solar and wind p
 \end{algorithm}
 
 
-Our objective in this current work is to do better than the above described solution. We consider 2 microgrids, equipped with batteries storing solar and wind powers respectively. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
+Our objective in this current work is to do better than the above described solution. We consider microgrids, equipped with the batteries that can store renewable power. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
 
-We formulate the problem in the framework of Markov Decision Process(MDP). MDP is the most popular mathematical framework for modeling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix and R is
-the reward function. The goal is to find an optimal sequence of actions that minimizes the cost objective. 
+We formulate the problem in the framework of Markov Decision Process (MDP). MDP \cite{sutton} is the most popular mathematical framework for modeling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix. $P_{a}(s,s^{'})$ is the probability that action $a$ in state $s$, result into state $s^{'}$. R is the reward function where $R_{a}(s,s^{'})$ is the reward obtained by taking action $a$ in state $s$ and $s^{'}$ being the next state. In infinite cost discounted setting \cite{vol1}, the goal is to obtain a policy $\pi$, which is a mapping from state space to action space that maximizes the following objective:
 
-We model consumption level as a markov process. We discretize the consumption into 3 levels, indicating Low, Medium and High. In this case, the current consumption level depends only on the previous level. The consumption level, and the amount of power left in the batteries form the state of the MDP. That is, 
 \begin{equation}
- state = [consumption, solar\_batterylevel, wind\_batteylevel].
+\sum_{t = 0}^{\infty} \gamma^{t}R_{a_{t}}(s_{t},s_{t+1}),
+\end{equation}
+where $a_{t} = \pi(s_{t}),$ and $\gamma$ is the discount factor.
+
+We model Power Demand as a Markov process. That is, current Demand depends only on the previous value. The Demand value, and the amount of power left in the batteries form the state of the MDP. That is, 
+\begin{equation}
+ state = [Demand, solar\_batterylevel, wind\_batteylevel].
 \end{equation}
 
-Based on the current state, both the microgrids need to take action on how much power needs to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all time periods, while power from renewable sources are uncertain in nature. 
+Based on the current state, the microgrids need to take action on how much power needs to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all time periods, while power from renewable sources is uncertain in nature. 
 
 \begin{equation}
 Action = [solar\_power,wind\_power,main\_power],
@@ -483,19 +482,27 @@ Action = [solar\_power,wind\_power,main\_power],
 
 The state evolves as follows:
 \begin{equation}
-solar\_batterylevel = solar\_batterylevel - solar\_power + solar(), 
+\begin{split}
+solar\_batterylevel = solar\_batterylevel - solar\_power + \\ solar(), 
+\end{split}
 \end{equation}
 and
 \begin{equation}
-wind\_batterylevel = wind\_batterylevel - wind\_power + wind(),
+\begin{split}
+wind\_batterylevel = wind\_batterylevel - wind\_power + \\ wind(),
+\end{split}
 \end{equation}
 where
 $solar()$ and $wind()$ are the solar and wind generation policies. 
-Our objective is to minimize the difference in demand and supply of the power. So, single stage cost function is as follows:
+Our objective is to minimize the long term average difference in demand and supply of the power. So, single stage Reward function is as follows:
 %$$ Single\_stage\_cost\_function  =$$
-$$(consumption - (solar\_power+wind\_power+main\_power))^2$$
-
-When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like Value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with algorithms which can be applied when the model information is not known. One such popular model-free algorithm is Q-learning. However, we cannot have microgrids applying Q-Learning independently, as they both are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm to solve the problem. At every slot, both the microgrids exchange the battery level information with each other. Then they apply Q-Learning on the joint state and obtain joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ ans so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
+\begin{equation}
+\begin{split}
+R = -(Demand - \\
+(solar\_power+wind\_power+main\_power))^2
+\end{split}
+\end{equation}
+When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like Value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with algorithms which can be applied when the model information is not known. One such popular model-free algorithm is Q-learning \cite{vol2}. However, we cannot have microgrids applying Q-Learning independently, as they are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm \cite{marl} to solve the problem. At every slot, the microgrids exchange the battery level information among themselves. Then they apply Q-Learning on the joint state and obtain joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ and so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
 \begin{equation}\label{Q-val}
 \begin{split}
 Q(s_{k},a_{k}) = Q(s_{k},a_{k}) + \\
@@ -508,10 +515,10 @@ We update this Q-values until convergence. At the end of this process, we will h
 \caption{}
 \label{q-learning}
 \begin{algorithmic}[1]
-	\State Initial state = [8, 5, 5] 
-    \State get\_consumption(consumption) : Procedure that gives next consumption level based on the current consumption level.
-    \State solar() : Procedure that computes solar power generated
-    \State wind() : Procedure that computes wind power generated.
+	\State  State $\leftarrow$ Initial State 
+    \State get\_Demand(Demand) : Procedure that gives next Demand level based on the current Demand level.
+   \State solar() : Function that computes solar power generated in a time slot
+    \State wind() : Function that computes wind power generated in a time slot.
     \State max\_prod : Maximum power alloted by the main grid.
     \State Deficit = 0 ; iterations = 0
     \Procedure{At every Time Slot and both the microgrids}{}   
@@ -519,10 +526,10 @@ We update this Q-values until convergence. At the end of this process, we will h
      \State Select an joint action $a$ vector according to $\epsilon$-greedy policy.
      \State new\_solar = solar - a(solar\_action) + solar()
      \State new\_wind = wind - a(wind\_action) + wind()
-     \State new\_consumption = get\_consumption(consumption)
+     \State new\_Demand = get\_Demand(Demand)
      \State Update the Q-values according to \eqref{Q-val}
-     \State state = [new\_consumption, new\_solar, new\_wind]
-     \State Deficit += Consumption - (a(solar\_action) + a(wind\_action) + a(main\_action))
+     \State state = [new\_Demand, new\_solar, new\_wind]
+     \State Deficit += Demand - (a(solar\_action) + a(wind\_action) + a(main\_action))
      \State iterations += 1;
     \EndProcedure
     \State Average Deficit = Deficit/iterations;
@@ -530,11 +537,11 @@ We update this Q-values until convergence. At the end of this process, we will h
 \end{algorithm}
 
 
-\subsection{Problem 2}
-In the above formulation, the cost of non-renewable power production at the main grid site is not taken into consideration. Therefore, it is natural to use entire power obtained from the main grid and we optimize on the amount of power we draw from the solar and wind batteries. In this formulation, we put a cost on amount of power that can be obtained from the main grid. That is, we modify our single stage cost function as follows:
-\begin{equation}
+\subsection{Problem 2 - Balancing Demand-Supply Deficit and cost of Power Production}
+In the above formulation, the cost of non-renewable power production at the main grid site is not taken into consideration. Therefore, it is natural to use the entire power obtained from the main grid and the optimization is done on the amount of power drawn from the solar and wind batteries. In this formulation, we put a cost on amount of power that can be obtained from the main grid. That is, we modify our single stage cost function as follows:
+\begin{equation}\label{prob2}
 \begin{split}
- c*(consumption - (solar\_power + wind\_power+ \\
+ c*(Demand - (solar\_power + wind\_power+ \\
  main\_power))^2+(1-c)*(main\_power)^2.\\
  c \in[0,1],
  \end{split}
@@ -545,11 +552,15 @@ where $c$ is the parameter that controls the demand-supply objective and the mai
 Similar to the above problem, we apply multi-agent Q-Learning to obtain the optimal solution. 
 
 \section{Experiments}
-As described earlier, we consider 2 microgrids operating on solar and wind power batteries. Consumption levels are taken to be 8,10 and 12. Note here that even larger consumption values can be scaled to the above considered values. The probability transition matrix for the consumption levels is given below. The maximum storage capacities of batteries are taken to be 5. The renewable energy generation process, for simulation purposes is considered to be Poisson with mean 2. Discount factor of the Q-learning is taken to be 0.9.
+We consider 2 microgrids operating on solar and wind power batteries respectively. Demand values are taken to be 8,10 and 12. Note here that even larger Demand values can be scaled to the above considered values. The probability transition matrix for the Demand levels is given below. 
+
+$$ P = [0.1 0.6 0.3; 0.3 0.1 0.6; 0.6 0.3 0.1];$$
+
+The maximum storage capacities of batteries are taken to be 5. The renewable energy generation process, for simulation purposes is considered to be Poisson with mean 2. Discount factor of the Q-learning is taken to be 0.9.
 
 We begin our simulations with the state $[8,5,5]$. First we run Algorithm 1 for $10^6$ iterations and compute the average deficit in demand and the supply. Then we run Algorithm 2 for $10^8$ iterations and compute the average deficit using optimal Q-values for $10^4$ iterations. We compare both the algorithms in Figure 1.
 
-With regard to the problem 2, we plot the values of average deficit in the power and the average production at the main grid obtained by different values of $c$ in \eqref{}. This is shown in Figure 2. 
+With regard to the problem 2, we plot the values of average deficit in the power and the average production at the main grid obtained by different values of $c$ in \eqref{prob2}. This is shown in Figure 2. 
 
 \subsection{Observations}
 
@@ -570,14 +581,8 @@ The conclusion goes here.
 The authors would like to thank...
 
 
-
-\begin{thebibliography}{1}
-
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
+ \bibliographystyle{IEEEtran}
+ \bibliography{IEEEabrv,reference}
 
 
 

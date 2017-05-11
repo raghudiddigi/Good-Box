@@ -422,7 +422,11 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-The abstract goes here.
+
+We consider the problem of minimizing the difference in the demand and the supply of the power using microgrids. We setup multiple microgrids, that provides electricity to a village. It has access to the batteries that can store renewable power and also the electrical lines from the main grid. At each time period, these microgrids need to take decision on amount of renewable power to be used from the batteries and amount of power needed from main grid. We formuate this problem in the framework of Markov Decision Process (MDP). The power allotment to the village from the main grid is fixed and bounded, whereas the renewable energy generation is uncertain in nature. Therefore we apply popular Reinforcement learning technique, Multi-Agent Q-Learning to solve this problem. Finally we consider a variant of this problem, where the cost of power production at main site is also included. In this scenario, the microgrids need to minimize the demand-supply deficit, while maintaining the desired average cost of the power production. 
+
+
+
 \end{abstract}
 
 % no keywords
@@ -462,7 +466,8 @@ In this section, we discuss two important problems associated with the microgrid
 
 \subsection{Problem 1 - Minimizing Demand-Supply Deficit}
 
-Consider a village that has not been electrified yet. We setup microgrids close to the village, which provides electrical connections to the village. It also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have power generation capabilities. They have access to renewable power and needs to obtain excess power from main grid. For ease of explanation, we consider two renewable sources - solar and wind. At each time slot, these obtain the power demand for the next slot from customers with the help of smart meters. These microgrids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.  
+Consider a village that has not been electrified yet. We setup microgrids close to the village, which provides electrical connections to the village. It also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have power generation capabilities. They have access to renewable power and needs to obtain excess power from main grid. For ease of explanation, we consider two renewable sources - solar and wind. At each time slot, these obtain the power demand for the next slot from customers with the help of smart meters. These microgrids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.
+
 One natural solution without the use of storage batteries is to fully use the solar and wind power generated at every time slot. The excess demand will be then requested from the main grid. If the requested power is less than or equal to the maximum alloted power, the main grid transfers this to the microgrids. Other wise, it transfers the maximum alloted power. This idea is described in Algorithm 1.
 
 
@@ -490,7 +495,7 @@ One natural solution without the use of storage batteries is to fully use the so
 \end{algorithm}
 
 
-Our objective in this current work is to do better than the above described solution. We consider microgrids, equipped with the batteries that can store renewable power. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
+Our objective in current work is to do better than the above described solution. We consider microgrids, equipped with the batteries that can store renewable power. That is, we deploy microgrids at the sites where there is availability of renewable resources. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
 
 We formulate the problem in the framework of Markov Decision Process (MDP). MDP \cite{sutton} is the most popular mathematical framework for modeling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix. $P_{a}(s,s^{'})$ is the probability that action $a$ in state $s$, result into state $s^{'}$. R is the reward function where $R_{a}(s,s^{'})$ is the reward obtained by taking action $a$ in state $s$ and $s^{'}$ being the next state. In infinite cost discounted setting \cite{vol1}, the goal is to obtain a policy $\pi$, which is a mapping from state space to action space that maximizes the following objective:
 
@@ -519,7 +524,8 @@ solar\_batterylevel &= solar\_batterylevel - solar\_power \\&\hspace{1cm}+ solar
 and
 \begin{equation}
 \begin{split}
-wind\_batterylevel = wind\_batterylevel - wind\_power + \\ wind(),
+wind\_batterylevel &= wind\_batterylevel - wind\_power 
+\\&\hspace{1cm}  + wind(),
 \end{split}
 \end{equation}
 where
@@ -568,10 +574,10 @@ We update this Q-values until convergence. At the end of this process, we will h
 
 
 \subsection{Problem 2 - Balancing Demand-Supply Deficit and cost of Power Production}
-In the above formulation, the cost of non-renewable power production at the main grid site is not taken into consideration. Therefore, it is natural to use the entire power obtained from the main grid and the optimization is done on the amount of power drawn from the solar and wind batteries. In this formulation, we put a cost on amount of power that can be obtained from the main grid. That is, we modify our single stage cost function as follows:
+In the above formulation, the cost of non-renewable power production at the main grid site is not taken into consideration. Therefore, it is natural to use the entire power obtained from the main grid and the optimization is done on the amount of power drawn from the solar and wind batteries. In this formulation, we put a cost on amount of power that can be obtained from the main grid. That is, we modify our single stage Reward as follows:
 \begin{equation}\label{prob2}
 \begin{split}
- c*(Demand - (solar\_power + wind\_power+ \\
+ -c*(Demand - (solar\_power + wind\_power+ \\
  main\_power))^2+(1-c)*(main\_power)^2.\\
  c \in[0,1],
  \end{split}
@@ -596,7 +602,11 @@ With regard to the problem 2, we plot the values of average deficit in the power
 
 
 \section{Conclusion}
-The conclusion goes here.
+We considered the problem of electrifying a village by setting up microgrids close to the village. These have access to renewable energy storage batteries and also connections from the main grid. We identified two problems associated with the microgrid. One problem is to minimize the long-run discounted demand-supply deficit. We model this problem in the framework of MDP. This formulation doesn't take into consideration the cost of power production at the main grid site. Finally, we formulated MDP taking this in to consideration. We applied Multi-Agent Q-Learning algorithm to solve these problems. Simulations show that ....
+
+\section{Future Work}
+In Future, we would like to consider the possibility of power sharing between the microgrids. In this case, along with decision on amount to be used from stored batteries, microgrids also have to take decision on amount of power that can be shared with others. We would also like to include heterogeneous price system. In this scenario, price of power production at main grid varies from time to time.
+
 
 
 

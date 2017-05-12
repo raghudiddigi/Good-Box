@@ -466,7 +466,7 @@ In this section, we discuss two important problems associated with the microgrid
 
 \subsection{Problem 1 - Minimizing Demand-Supply Deficit}
 
-Consider a village that has not been electrified yet. We setup microgrids close to the village, which provides electrical connections to the village. It also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have non-renewable power generation capabilities. They have access to renewable power and needs to obtain excess power from main grid. For ease of explanation, we consider two renewable sources - solar and wind. At each time slot, microgrids obtain the power demand for the next slot from customers with the help of smart meters. These microgrids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.
+Consider a village that has not been electrified yet. We setup microgrids close to the village, which provides electrical connections to the village. It also has connections from the main grid. Power supply is generally done in time slots, for example every 2 hours. Microgrids do not have non-renewable power generation capabilities. They have access to renewable power and needs to obtain excess power from main grid. For ease of explanation, we consider two renewable sources - solar and wind. At the beginning of each time slot, microgrids obtain the power demand from customers with the help of smart meters. These microgrids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.
 
 One natural solution without the use of storage batteries is to fully use the solar and wind power generated at every time slot. The excess demand will be then requested from the main grid. If the requested power is less than or equal to the maximum alloted power, the main grid transfers this to the microgrids. Other wise, it transfers the maximum alloted power. This idea is described in Algorithm 1.
 
@@ -495,7 +495,7 @@ One natural solution without the use of storage batteries is to fully use the so
 \end{algorithm}
 
 
-Our objective in current work is to do better than the above described solution. We consider microgrids, equipped with the batteries that can store renewable power. That is, we deploy microgrids at the sites where there is availability of renewable resources. Our goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
+Our objective in current work is to do better than the above described solution. We consider microgrids, equipped with the batteries that can store renewable power. That is, we deploy microgrids at the sites where there is availability of renewable resources. The goal is to intelligently use the stored power in batteries and take optimal action at every time slot to minimize the demand-supply deficit.
 
 We formulate the problem in the framework of Markov Decision Process (MDP). MDP \cite{sutton} is the most popular mathematical framework for modeling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix. $P_{a}(s,s^{'})$ is the probability that action $a$ in state $s$, result into state $s^{'}$. R is the reward function where $R_{a}(s,s^{'})$ is the reward obtained by taking action $a$ in state $s$ and $s^{'}$ being the next state. In infinite cost discounted setting \cite{vol1}, the goal is to obtain a policy $\pi$, which is a mapping from state space to action space that maximizes the following objective:
 
@@ -509,7 +509,7 @@ We model Power Demand as a Markov process. That is, current Demand depends only 
  state = [Demand, solar\_batterylevel, wind\_batterylevel].
 \end{equation}
 
-Based on the current state, the microgrids need to take action on how much power needs to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all time periods, while power from renewable sources is uncertain in nature. 
+Based on the current state, the microgrids need to take action on number of units of power needs to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all time periods, while power from renewable sources is uncertain in nature. 
 
 \begin{equation}
 Action = [solar\_power,wind\_power,main\_power],
@@ -529,7 +529,7 @@ wind\_batterylevel &= wind\_batterylevel - wind\_power
 \end{split}
 \end{equation}
 where
-$solar()$ and $wind()$ are the solar and wind generation policies. 
+$solar()$ and $wind()$ are the solar and wind power generation policies. 
 Our objective is to minimize the long term average difference in demand and supply of the power. So, single stage Reward function is as follows:
 %$$ Single\_stage\_cost\_function  =$$
 \begin{equation}
@@ -538,7 +538,7 @@ R = -&(Demand - \\
 &(solar\_power+wind\_power+main\_power))^2
 \end{split}
 \end{equation}
-When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like Value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with algorithms which can be applied when the model information is not known. One such popular model-free algorithm is Q-learning \cite{vol2}. However, we cannot have microgrids applying Q-Learning independently, as they are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm \cite{marl} to solve the problem. At every slot, the microgrids exchange the battery level information among themselves. Then they apply Q-Learning on the joint state and obtain joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ and so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
+When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like Value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with algorithms which can be applied when the model information is not completely known. One such popular model-free algorithm is Q-learning \cite{vol2}. However, we cannot have microgrids applying Q-Learning independently, as they are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm \cite{marl} to solve the problem. At every slot, the microgrids exchange the battery level information among themselves. Then they apply Q-Learning on the joint state and obtain joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ and so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
 \begin{equation}\label{Q-val}
 \begin{split}
 Q(s_{k},a_{k}) = Q(s_{k},a_{k}) + \\
@@ -557,7 +557,7 @@ We update this Q-values until convergence. At the end of this process, we will h
     \State wind() : Function that computes wind power generated in a time slot.
     \State max\_prod : Maximum power alloted by the main grid.
     \State Deficit = 0 ; iterations = 0
-    \Procedure{At every Time Slot and both the microgrids}{}   
+    \Procedure{At every Time Slot and for all the microgrids}{}   
      
      \State Select an joint action $a$ vector according to $\epsilon$-greedy policy.
      \State new\_solar = solar - a(solar\_action) + solar()
@@ -588,17 +588,39 @@ where $c$ is the parameter that controls the demand-supply objective and the mai
 Similar to the above problem, we apply multi-agent Q-Learning to obtain the optimal solution. 
 
 \section{Experiments}
-We consider 2 microgrids operating on solar and wind power batteries respectively. Demand values are taken to be 8,10 and 12. Note here that even larger Demand values can be scaled to the above considered values. The probability transition matrix for the Demand levels is given below. 
+We consider 2 microgrids operating on solar and wind power batteries respectively. Demand values are taken to be 8,10 and 12. The probability transition matrix for the Demand levels is given below. 
 
-$$ P = [0.1 0.6 0.3; 0.3 0.1 0.6; 0.6 0.3 0.1];$$
+$$ P = [0.1\hspace{0.1cm}0.6\hspace{0.1cm} 0.3; 0.3\hspace{0.1cm} 0.1\hspace{0.1cm} 0.6; 0.6 \hspace{0.1cm}0.3 \hspace{0.1cm}0.1];$$
 
-The maximum storage capacities of batteries are taken to be 5. The renewable energy generation process, for simulation purposes is considered to be Poisson with mean 2. Discount factor of the Q-learning is taken to be 0.9.
+The maximum storage capacity of the batteries is set to 5. The renewable energy generation process, for simulation purposes is considered to be Poisson with mean 2. Discount factor of the Q-learning is taken to be 0.9.
 
 We begin our simulations with the state $[8,5,5]$. First we run Algorithm 1 for $10^6$ iterations and compute the average deficit in demand and the supply. Then we run Algorithm 2 for $10^8$ iterations and compute the average deficit using optimal Q-values for $10^4$ iterations. We compare both the algorithms in Figure 1.
 
-With regard to the problem 2, we plot the values of average deficit in the power and the average production at the main grid obtained by different values of $c$ in \eqref{prob2}. This is shown in Figure 2. 
+\begin{figure}[h!]
+\begin{center}
+ \includegraphics[width = 10cm,height=10cm]{plot1.jpg}
+ \caption{Comparison of Algorithms on Problem 1}
+ \end{center}
+ \end{figure}
+
+
+With regard to the problem 2, we plot the values of average deficit in the power and the average production at the main grid obtained by different values of $c$ in \eqref{prob2}. The maximum power allocation at the main site is set to 8. This is shown in Figure 2. 
+
+\begin{figure}[h!]
+\begin{center}
+ \includegraphics[width = 10cm,height=10cm]{plot2.jpg}
+ \caption{Algorithm 2 applied to Problem 2}
+ \end{center}
+ \end{figure}
 
 \subsection{Observations}
+
+\begin{itemize}
+\item In Figure 1, we see that Algorithm 1 performs better than Algorithm 2, when the Maximum Power Allocation (MPA) at the main site is less than 3. This is because, when the MPA is very less compared to the minimum demand, storing the power in the batteries doesn't provide any advantage. 
+\item On the other hand, if the MPA is closer to the minimum demand, Algorithm 2 outperforms Algorithm 1. 
+\item In Figure 2, we observe that as the value of $c$ increases, average demand-supply deficit decreases and the average power obtained from the main grid increases. 
+\end{itemize}
+
 
 
 \section{Conclusion}

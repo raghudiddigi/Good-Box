@@ -423,7 +423,7 @@
 % in the abstract
 \begin{abstract}
 
-We consider the problem of minimizing the difference in the demand and the supply of the power using microgrids. We setup multiple microgrids, that provides electricity to a village. It has access to the batteries that can store renewable power and also the electrical lines from the main grid. At each time period, these microgrids need to take decision on amount of renewable power to be used from the batteries and amount of power needed from main grid. We formuate this problem in the framework of Markov Decision Process (MDP). The power allotment to the village from the main grid is fixed and bounded, whereas the renewable energy generation is uncertain in nature. Therefore we apply popular Reinforcement learning technique, Multi-Agent Q-Learning to the problem. Finally we consider a variant of this problem, where the cost of power production at main site is also taken into consideration. In this scenario, the microgrids need to minimize the demand-supply deficit, while maintaining the desired average cost of the power production. 
+We consider the problem of minimizing the difference in the demand and the supply of the power using microgrids. We setup multiple microgrids, that provides electricity to a village. It has access to the batteries that can store renewable power and also the electrical lines from the main grid. At each time period, these microgrids need to take decision on amount of renewable power to be used from the batteries and amount of power needed from main grid. We formuate this problem in the framework of Markov Decision Process (MDP), similar to the one discussed in \cite{goodmdp}. The power allotment to the village from the main grid is fixed and bounded, whereas the renewable energy generation is uncertain in nature. Therefore we apply popular Reinforcement learning technique, Multi-Agent Q-Learning to the problem. Finally we consider a variant of this problem, where the cost of power production at main site is also taken into consideration. In this scenario, the microgrids need to minimize the demand-supply deficit, while maintaining the desired average cost of the power production. 
 
 
 
@@ -448,7 +448,11 @@ We consider the problem of minimizing the difference in the demand and the suppl
 
 \section{Introduction}
 
-Electricity is one of the most important components of the modern life. There are a total of 18,452 unelectrified villages in India. Providing electricity to these villages is difficult for a number of reasons. The village may be situated very far away from the main grid and it would be difficult to establish a direct electrical line between them. Also, due to increasing global warming, we want to make less use of fossil fuels. Our objective in this work is to provide a solution to electrifying these villages.
+Electricity is one of the most important components of the modern life. According to a recent survey, there are a total of 18,452 unelectrified villages in India. Providing electricity to these villages is difficult for a number of reasons. The village may be situated very far away from the main grid and it would be difficult to establish a direct electrical line between the main grid and the village. Also, due to increasing global warming, we want to make less use of fossil fuels for the generation of power. Our objective in this work is to provide a solution to electrifying these villages.
+
+The concept of smart grid \cite{weiss1999multiagent}, is aimed at improving traditional power grid operations.  It is a distributed energy network composed of intelligent nodes (or agents) that can either operate autonomously or communicate and share energy. The  power grid is facing wide variety of challenges due to incorporation of renewable and sustainable energy power generation sources. The aim of smart grid is to effectively deliver energy to consumers and maintain grid stability.
+
+A microgrid is a distributed networked group consisting of renewable energy generation sources with aim of providing energy to small areas. This scenario is being envisaged as an important alternative to the conventional scheme with large power stations transmitting energy over long distances. The microgrid technology is useful particularly in the Indian context where extending power supply from the main grids to remote villages is a challenge. While the main power stations are highly connected, micro-grids with local power generation, storage and conversion capabilities, act locally or share power with a few neighboring micro-grid nodes \cite{farhangi2010path}.
 
 
 The concept of smart grid \cite{weiss1999multiagent}, is aimed at improving traditional power grid operations.  It is a distributed energy network composed of intelligent nodes (or agents) that can either operate autonomously or communicate and share energy. The  power grid is facing wide variety of challenges due to incorporation of renewable and sustainable energy power generation sources. The aim of smart grid is to effectively deliver energy to consumers and maintain grid stability.
@@ -459,7 +463,9 @@ A microgrid is a distributed networked group consisting of renewable energy gene
 
 We setup microgrids closer to the villages, with an electricity connection from main grids. The microgrids will also be provided with batteries that can store renewable energy sources. Owing to the cost, these batteries will have limited storage capacities. Now each microgrid needs to take decision on amount of renewable energy that needs to be used at every time slot and the amount of power that needs to drawn from the main grid. Consider a scenario where, microgrids will use the renewable energy as it is. That is, they do not store the energy. Then, during the peak demand, if the amount of renewable energy generated is low and power obtained from the main grid is also low, it leads to huge blackout. Thus, it is important to intelligently store and use the renewable energy. In this work, we apply Multi-agent Q-learning algorithm to solve this problem. 
 
--------Literature Work to Follow------------------
+
+\section*{Organization of the Paper}	
+The rest of the paper is organized as follows. The next section describes the important problems associated with the microgrids and solution techniques to solve them. Section III presents the results of experiments of our algorithms. Section IV provides the concluding remarks and Section V discusses the future research directions.
 
 % \subsection{Subsection Heading Here}
 % Subsection text here.
@@ -483,7 +489,7 @@ One natural solution without the use of storage batteries is to fully use the so
 \label{greedy}
 \begin{algorithmic}[1]
 	\State Demand $\leftarrow$ Initial Demand
-    \State get\_Demand(Demand) : Procedure that gives next Demand level based on the current Demand level.
+    \State get\_Demand(Demand) : Function that gives next Demand based on the current Demand.
     \State solar() : Function that computes solar power generated in a time slot
     \State wind() : Function that computes wind power generated in a time slot
     \State max\_prod : Maximum power alloted by the main grid.
@@ -561,7 +567,7 @@ We update this Q-values until convergence. At the end of this process, we will h
 \label{q-learning}
 \begin{algorithmic}[1]
 	\State  State $\leftarrow$ Initial State 
-    \State get\_Demand(Demand) : Procedure that gives next Demand level based on the current Demand level.
+    \State get\_Demand(Demand) : Function that gives next Demand based on the current Demand.
    \State solar() : Function that computes solar power generated in a time slot
     \State wind() : Function that computes wind power generated in a time slot.
     \State max\_prod : Maximum power alloted by the main grid.
@@ -641,8 +647,7 @@ In Future, we would like to consider the possibility of power sharing between th
 % use section* for acknowledgment
 \section*{Acknowledgment}
 
-
-The authors would like to thank...
+The authors would like to thank Robert Bosch Centre for Cyber-Physical Systems, IISc, Bangalore, India for supporting this work.
 
 
  \bibliographystyle{IEEEtran}

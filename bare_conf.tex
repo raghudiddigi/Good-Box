@@ -448,16 +448,19 @@ We consider the problem of minimizing the difference in the demand and the suppl
 
 \section{Introduction}
 
-Electricity is one of the most important components of the modern life. There are a total of 18,452 unelectrified villages in India. Providing electricity to these villages is difficult for a number of reasons. The village may be situated very far away from the main grid and it would be difficult to establish a direct electrical line between them. Also, due to increasing global warming, we want to make less use of fossil fuels. Our objective in this work is to provide a solution to electrifying these villages.
+Electricity is one of the most important components of the modern life. There are a total of 18,452 unnelectrified villages in India. Providing electricity to these villages is difficult for a number of reasons. The village may be situated very far away from the main grid and it would be difficult to establish a direct electrical line between them. Also, due to increasing global warming, we want to make less use of fossil fuels. Our objective in this work is to provide a solution to electrifying these villages.
 
 
 The concept of smart grid \cite{weiss1999multiagent}, is aimed at improving traditional power grid operations.  It is a distributed energy network composed of intelligent nodes (or agents) that can either operate autonomously or communicate and share energy. The  power grid is facing wide variety of challenges due to incorporation of renewable and sustainable energy power generation sources. The aim of smart grid is to effectively deliver energy to consumers and maintain grid stability.
 
-A microgrid is a distributed networked group consisting of renewable energy generation sources with aim of providing energy to small areas. This scenario is being envisaged as an important alternative to the conventional scheme with large power stations transmitting energy over long distances. The microgrid technology is useful particularly in the Indian context where extending power supply from the main grids to remote villages is a challenge. While the main power stations are highly connected, micro-grids with local power generation, storage and conversion capabilities, act locally or share power with a few neighboring micro-grid nodes \cite{farhangi2010path}.
+A micro grid is a distributed networked group consisting of renewable energy generation sources with aim of providing energy to small areas. This scenario is being envisaged as an important alternative to the conventional scheme with large power stations transmitting energy over long distances. The micro grid technology is useful particularly in the Indian context where extending power supply from the main grids to remote villages is a challenge. While the main power stations are highly connected, micro-grids with local power generation, storage and conversion capabilities, act locally or share power with a few neighbouring micro-grid nodes \cite{farhangi2010path}. 
+
+Demand side management (DSM) \cite{logenthiran2011multi, wang2010demand}, is one of the important and challenging task in smart grids. It is aimed at effectively managing consumer demand so as to  reduce total energy cost. Energy generation capabilities of micro grids poses even more challenging task if they are included into traditional power grids. Key techniques to address DSM problem in smart grid are peak clipping \cite{}, valley filling \cite{}, load shifting \cite{}.
 
 
 
-We setup microgrids closer to the villages, with an electricity connection from main grids. The microgrids will also be provided with batteries that can store renewable energy sources. Owing to the cost, these batteries will have limited storage capacities. Now each microgrid needs to take decision on amount of renewable energy that needs to be used at every time slot and the amount of power that needs to drawn from the main grid. Consider a scenario where, microgrids will use the renewable energy as it is. That is, they do not store the energy. Then, during the peak demand, if the amount of renewable energy generated is low and power obtained from the main grid is also low, it leads to huge blackout. Thus, it is important to intelligently store and use the renewable energy. In this work, we apply Multi-agent Q-learning algorithm to solve this problem. 
+
+We setup micro grids closer to the villages, with an electricity connection from main grids. The micro grids will also be provided with batteries that can store renewable energy sources. Owing to the cost, these batteries will have limited storage capacities. Now each micro grid needs to take decision on amount of renewable energy that needs to be used at every time slot and the amount of power that needs to drawn from the main grid. Consider a scenario where, micro grids will use the renewable energy as it is. That is, they do not store the energy. Then, during the peak demand, if the amount of renewable energy generated is low and power obtained from the main grid is also low, it leads to huge blackout. Thus, it is important to intelligently store and use the renewable energy. In this work, we apply Multi-agent Q-learning algorithm to solve this problem. 
 
 -------Literature Work to Follow------------------
 
@@ -469,13 +472,13 @@ We setup microgrids closer to the villages, with an electricity connection from 
 % Subsubsection text here.
 
 \section{Our Work}
-In this section, we discuss two important problems associated with the microgrids. We first formulate the problem in the framework of Markov Decision Process (MDP), similar to the one described in \cite{goodmdp}. We then apply cooperative Multi-Agent Q-Learning algorithm to solve the problems.
+In this section, we discuss two important problems associated with the micro grids. We first formulate the problem in the framework of Markov Decision Process (MDP), similar to the one described in \cite{goodmdp}. We then apply cooperative Multi-Agent Q-Learning algorithm to solve the problems.
 
 \subsection{Problem 1 - Minimizing Demand-Supply Deficit}
 
-Consider a village that has not been electrified yet. We setup microgrids close to the village, and provides electrical connections to the village. It also has power connections from the main grid. Power supply is generally done in time slots, for example every two hours. Microgrids do not have non-renewable power generation capabilities. They have access to the renewable power and needs to obtain the excess power from the main grid. For ease of explanation, we consider two renewable sources - solar and wind. At the beginning of each time slot, microgrids obtain the power demand from customers with the help of the smart meters. These microgrids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.
+Consider a village that has not been electrified yet. We setup micro grids close to the village, and provides electrical connections to the village. It also has power connections from the main grid. Power supply is generally done in time slots, for example every two hours. Micro grids do not have non-renewable power generation capabilities. They have access to the renewable power and needs to obtain the excess power from the main grid. For ease of explanation, we consider two renewable sources - solar and wind. At the beginning of each time slot, micro grids obtain the power demand from customers with the help of the smart meters. These micro grids need to take decisions on amount of renewable power to be used so that the expected long term demand-supply deficit is minimized.
 
-One natural solution without the use of storage batteries is to fully use the solar and wind power generated at every time slot. The excess demand will be then requested from the main grid. If the requested power is less than or equal to the maximum alloted power, the main grid transfers this to the microgrids. Other wise, it transfers the maximum alloted power. This idea is described in Algorithm 1.
+One natural solution without the use of storage batteries is to fully use the solar and wind power generated at every time slot. The excess demand will be then requested from the main grid. If the requested power is less than or equal to the maximum allotted power, the main grid transfers this to the micro grids. Other wise, it transfers the maximum allotted power. This idea is described in Algorithm 1.
 
 
 \begin{algorithm}
@@ -486,7 +489,7 @@ One natural solution without the use of storage batteries is to fully use the so
     \State get\_Demand(Demand) : Procedure that gives next Demand level based on the current Demand level.
     \State solar() : Function that computes solar power generated in a time slot
     \State wind() : Function that computes wind power generated in a time slot
-    \State max\_prod : Maximum power alloted by the main grid.
+    \State max\_prod : Maximum power allotted by the main grid.
     \State Deficit = 0 ; iterations = 0
     \Procedure{At every Time Slot}{}   
      \State $solar\_action = solar()$
@@ -502,9 +505,9 @@ One natural solution without the use of storage batteries is to fully use the so
 \end{algorithm}
 
 
-Our objective in the current work is to do better than the above described solution. Microgrids are equipped with the batteries that can store the renewable power. That is, we deploy the microgrids at the sites where there is availability of renewable resources. The goal is to intelligently use the stored power in batteries and take the optimal action at every time slot to minimize the demand-supply deficit.
+Our objective in the current work is to do better than the above described solution. Micro grids are equipped with the batteries that can store the renewable power. That is, we deploy the micro grids at the sites where there is availability of renewable resources. The goal is to intelligently use the stored power in batteries and take the optimal action at every time slot to minimize the demand-supply deficit.
 
-We formulate the problem in the framework of Markov Decision Process (MDP). MDP \cite{sutton} is the most popular mathematical framework for modeling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix. $P_{a}(s,s^{'})$ is the probability that action $a$ in the state $s$, result into the state $s^{'}$. R is the reward function where $R_{a}(s,s^{'})$ is the reward obtained by taking action $a$ in the state $s$ and the $s^{'}$ being the next state. In infinite horizon discounted setting \cite{vol1}, the goal is to obtain a stationary policy $\pi$, which is a mapping from state space to action space that maximizes the following objective:
+We formulate the problem in the framework of Markov Decision Process (MDP). MDP \cite{sutton} is the most popular mathematical framework for modelling optimal sequential decision making problems under uncertainty. A Markov decision process is defined via tuple $< S; A; P;R >$, where S is the set of states. A is the set of actions. P respectively the probability transition matrix. $P_{a}(s,s^{'})$ is the probability that action $a$ in the state $s$, result into the state $s^{'}$. R is the reward function where $R_{a}(s,s^{'})$ is the reward obtained by taking action $a$ in the state $s$ and the $s^{'}$ being the next state. In infinite horizon discounted setting \cite{vol1}, the goal is to obtain a stationary policy $\pi$, which is a mapping from state space to action space that maximizes the following objective:
 
 \begin{equation}
 \sum_{t = 0}^{\infty} \gamma^{t}R_{a_{t}}(s_{t},s_{t+1}),
@@ -516,7 +519,7 @@ We model Power Demand as a Markov process. That is, the current Demand depends o
  state = [Demand,\hspace{0.1cm} solar\_batterylevel,\hspace{0.1cm} wind\_batterylevel].
 \end{equation}
 
-Based on the current state, the microgrids need to take decision on the number of units of power to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all the time periods, while power from the  renewable sources is uncertain in nature. 
+Based on the current state, the micro grids need to take decision on the number of units of power to be used from their batteries, and amount of power that is needed from the main grid. Note that the power from the main grid is fixed and bounded at all the time periods, while power from the  renewable sources is uncertain in nature. 
 
 \begin{equation}
 Action = [solar\_power,\hspace{0.1cm} wind\_power,\hspace{0.1cm} main\_power],
@@ -545,7 +548,7 @@ R = -&(Demand - \\
 &(solar\_power+wind\_power+main\_power))^2
 \end{split}
 \end{equation}
-When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with the algorithms which can be applied when the model information is not completely known. One such popular model-free algorithm is Q-learning \cite{vol2}. However, microgrids applying Q-Learning independently is not a feasible solution, as they are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm \cite{marl} to solve the problem. At every slot, the microgrids exchange the battery level information among themselves. Then they apply Q-Learning on the joint state and obtain the joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ and so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
+When there is uncertainty in the system, like the renewal energy generation in this case, tradition solution techniques like value iteration and policy iterations cannot be applied. Reinforcement Learning provides us with the algorithms which can be applied when the model information is not completely known. One such popular model-free algorithm is Q-learning \cite{vol2}. However, micro grids applying Q-Learning independently is not a feasible solution, as they are working towards a common goal. Hence we apply co-operative Multi-Agent Q-Learning algorithm \cite{marl} to solve the problem. At every slot, the microgrids exchange the battery level information among themselves. Then they apply Q-Learning on the joint state and obtain the joint action. Each microgrid then selects its respective action. Let the joint state at time $k$ be $s_{k}$. We select a joint action, based on a $\epsilon-$greedy policy. Let it be $a_{k}$ and so we move to a new state $s_{k+1}$. Let the single stage reward obtained be $r_{k}$ Then the Q-values are updated as follows:
 \begin{equation}\label{Q-val}
 \begin{split}
 Q(s_{k},a_{k}) = Q(s_{k},a_{k}) + \\
@@ -564,7 +567,7 @@ We update this Q-values until convergence. At the end of this process, we will h
     \State get\_Demand(Demand) : Procedure that gives next Demand level based on the current Demand level.
    \State solar() : Function that computes solar power generated in a time slot
     \State wind() : Function that computes wind power generated in a time slot.
-    \State max\_prod : Maximum power alloted by the main grid.
+    \State max\_prod : Maximum power allotted by the main grid.
     \State Deficit = 0 ; iterations = 0
     \Procedure{At every Time Slot and for all the microgrids}{}   
      

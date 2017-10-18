@@ -1,0 +1,29 @@
+\section{Model and Problem}
+
+******************************* This also needs significant improvements. Written briefly here for getting a idea about the work. I will take care of all the section from here.***************
+
+ For every microgrid, 
+\begin{itemize}
+	\item State Space : $<time, net\_demand_{t},cost_{t}>$, where $net\_demand_{t}$ is the power units available at time $t$. It can be written as $net\_demand_{t} = Demand_{t} - (renewable_{t} + battery_{t}).$
+	
+	\item $net\_demand_{t}$ can be either positive or negative. Negative units means that the microgrid needs extra power units to meet its demand. Positive units implies it can transfer those units to other microgrids. 
+	
+	\item $cost_{t}$ is the price at which the power units are bought/sold. This is decided by the main grid. Note that $Demand_{t}$ and $cost_{t}$ are modeled as Markov Process, while the $renewable_{t}$ can be any stochastic process (Ex : Poisson Process.)
+	
+	\item Note that the cuurent time $time$ is included in the state space. This is because given a $net\_demand$, different actions are optimal at different times. For example, in the morning a solar microgrid may be better of selling the power than filling its battery. Whereas a wind microgrid can be better of buying the power units as there will be less wind power till the afternoon. 
+	
+	\item Action : Action taken at time $t$ will be $u_{t}$, which represents the number of units that can be borrowed/transferred. If the units are borrowed, they are first used to meet the demand and the remaining will be used to fill up the battery. 
+	
+\end{itemize}
+
+\begin{itemize}
+
+\item Single stage Cost function : 
+
+\begin{align}
+R_t = (u_{t}*cost_{t}) + c_{t}*(Demand_{t} - (renewable_{t}+battery_{t}+u_{t})),
+\end{align}
+
+where $c_{t}$ is the threshold for balancing the price and Demand-supply deficit. 
+
+\end{itemize}
